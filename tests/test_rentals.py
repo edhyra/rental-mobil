@@ -1,12 +1,12 @@
 import pytest
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 from datetime import datetime, timedelta
 from app.main import app
 
 
 @pytest.mark.asyncio
 async def test_rental_flow():
-    async with AsyncClient(app=app, base_url="http://test") as ac:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
         # create customer
         customer = {"name": "Test User", "email": "test@example.com"}
         rc = await ac.post("/customers/", json=customer)
