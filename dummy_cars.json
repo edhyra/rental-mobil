@@ -1,0 +1,16 @@
+[
+  {
+    "plate_number": "B 1234 ABC",
+    "status": "available",
+    "make": "Toyota",
+    "model": "Avanza",
+    "year": 2018
+  },
+  {
+    "plate_number": "B 5678 XYZ",
+    "status": "rented",
+    "make": "Honda",
+    "model": "Jazz",
+    "year": 2020
+  }
+]
