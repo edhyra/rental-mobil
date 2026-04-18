@@ -17,6 +17,18 @@ class Car(Document):
     class Settings:
         name = "cars"
 
+    async def mark_rented(self):
+        self.status = "rented"
+        await self.save()
+
+    async def mark_available(self):
+        self.status = "available"
+        await self.save()
+
+    async def update_status(self, status: str):
+        self.status = status
+        await self.save()
+
 
 class Customer(Document):
     name: str
@@ -28,6 +40,15 @@ class Customer(Document):
 
     class Settings:
         name = "customers"
+
+    async def update_info(self, name: Optional[str] = None, email: Optional[str] = None, phone: Optional[str] = None):
+        if name is not None:
+            self.name = name
+        if email is not None:
+            self.email = email
+        if phone is not None:
+            self.phone = phone
+        await self.save()
 
 
 class Rental(Document):
@@ -44,6 +65,18 @@ class Rental(Document):
     class Settings:
         name = "rentals"
 
+    def calculate_total(self) -> float:
+        delta_days = max(1, (self.end_date.date() - self.start_date.date()).days + 1)
+        return float(self.daily_rate) * delta_days
+
+    async def mark_returned(self):
+        self.status = "returned"
+        self.returned_at = datetime.utcnow()
+        await self.save()
+
+    def is_active(self) -> bool:
+        return self.status == "ongoing"
+
 
 class Payment(Document):
     rental_id: PydanticObjectId
@@ -55,3 +88,15 @@ class Payment(Document):
 
     class Settings:
         name = "payments"
+
+    async def process(self, method: str):
+        self.method = method
+        self.status = "paid"
+        self.paid_at = datetime.utcnow()
+        await self.save()
+        return self
+
+    async def mark_paid(self):
+        self.status = "paid"
+        self.paid_at = datetime.utcnow()
+        await self.save()
