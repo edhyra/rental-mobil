@@ -9,6 +9,10 @@ class Car {
   +string color
   +float daily_rate
   +string status
+  +datetime created_at
+  +mark_rented(): void
+  +mark_available(): void
+  +update_status(status: string): void
 }
 
 class Customer {
@@ -17,6 +21,9 @@ class Customer {
   +string email
   +string phone
   +string driver_license_number
+  +string address
+  +datetime created_at
+  +update_info(name?: string, email?: string, phone?: string): void
 }
 
 class Rental {
@@ -28,6 +35,11 @@ class Rental {
   +float daily_rate
   +float total_amount
   +string status
+  +datetime created_at
+  +datetime returned_at
+  +calculate_total(): float
+  +mark_returned(): void
+  +is_active(): bool
 }
 
 class Payment {
@@ -36,10 +48,44 @@ class Payment {
   +float amount
   +string method
   +string status
+  +datetime paid_at
+  +datetime created_at
+  +process(method: string): Payment
+  +mark_paid(): void
+}
+
+class RentalService {
+  +create_rental(customer_id: str, car_id: str, start_date: datetime, end_date: datetime): Rental | None
+  +return_rental(rental_id: str): Rental | None
+}
+
+class InMemoryBackend {
+  +list_cars(): list
+  +get_car(car_id: str)
+  +create_car(data: dict)
+  +update_car(car_id: str, update: dict)
+  +delete_car(car_id: str)
+  +list_customers(): list
+  +get_customer(customer_id: str)
+  +create_customer(data: dict)
+  +update_customer(customer_id: str, update: dict)
+  +delete_customer(customer_id: str)
+  +create_rental(customer_id: str, car_id: str, start_date, end_date)
+  +return_rental(rental_id: str)
+  +list_rentals(): list
+  +get_rental(rental_id: str)
+  +reset_all(): void
 }
 
 Car "1" <-- "*" Rental : rents
 Customer "1" <-- "*" Rental : makes
 Rental "1" <-- "*" Payment : paid-by
+
+RentalService ..> Car : checks/updates
+RentalService ..> Rental : creates/updates
+InMemoryBackend ..> Car : stores
+InMemoryBackend ..> Customer : stores
+InMemoryBackend ..> Rental : stores
+InMemoryBackend ..> Payment : stores
 
 @enduml

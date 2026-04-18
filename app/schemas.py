@@ -42,3 +42,39 @@ class PaymentCreate(BaseModel):
     rental_id: str
     amount: float
     method: str
+
+
+# Output / response models reflecting stored attributes
+class CarOut(CarCreate):
+    id: Optional[str] = None
+    status: Optional[str] = None
+    created_at: Optional[datetime] = None
+
+
+class CustomerOut(CustomerCreate):
+    id: Optional[str] = None
+    address: Optional[str] = None
+    created_at: Optional[datetime] = None
+
+
+class RentalOut(BaseModel):
+    id: Optional[str] = None
+    car_id: str
+    customer_id: str
+    start_date: datetime
+    end_date: datetime
+    daily_rate: float
+    total_amount: float
+    status: str
+    created_at: Optional[datetime] = None
+    returned_at: Optional[datetime] = None
+
+
+class PaymentOut(BaseModel):
+    id: Optional[str] = None
+    rental_id: str
+    amount: float
+    method: str
+    status: str
+    paid_at: Optional[datetime] = None
+    created_at: Optional[datetime] = None
