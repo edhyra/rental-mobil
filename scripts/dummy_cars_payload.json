@@ -1,0 +1,8 @@
+{
+  "collection": "cars",
+  "doc": [
+    {"plate_number": "B1234XYZ", "model": "Toyota Avanza", "status": "available", "color": "white", "year": 2019},
+    {"plate_number": "B5678ABC", "model": "Honda Jazz", "status": "rented", "color": "black", "year": 2020},
+    {"plate_number": "D9999ZZZ", "model": "Suzuki Ertiga", "status": "available", "color": "silver", "year": 2018}
+  ]
+}
