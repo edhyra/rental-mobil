@@ -1,0 +1,45 @@
+@startuml
+
+class Car {
+  +ObjectId id
+  +string plate_number
+  +string make
+  +string model
+  +int year
+  +string color
+  +float daily_rate
+  +string status
+}
+
+class Customer {
+  +ObjectId id
+  +string name
+  +string email
+  +string phone
+  +string driver_license_number
+}
+
+class Rental {
+  +ObjectId id
+  +ObjectId car_id
+  +ObjectId customer_id
+  +datetime start_date
+  +datetime end_date
+  +float daily_rate
+  +float total_amount
+  +string status
+}
+
+class Payment {
+  +ObjectId id
+  +ObjectId rental_id
+  +float amount
+  +string method
+  +string status
+}
+
+Car "1" <-- "*" Rental : rents
+Customer "1" <-- "*" Rental : makes
+Rental "1" <-- "*" Payment : paid-by
+
+@enduml

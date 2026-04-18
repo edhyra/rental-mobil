@@ -1,0 +1,48 @@
+{
+  "cars": {
+    "bsonType": "object",
+    "required": ["plate_number", "make", "model", "year", "daily_rate", "status"],
+    "properties": {
+      "plate_number": {"bsonType": "string"},
+      "make": {"bsonType": "string"},
+      "model": {"bsonType": "string"},
+      "year": {"bsonType": "int"},
+      "color": {"bsonType": "string"},
+      "daily_rate": {"bsonType": "double"},
+      "status": {"bsonType": "string"}
+    }
+  },
+  "customers": {
+    "bsonType": "object",
+    "required": ["name", "email"],
+    "properties": {
+      "name": {"bsonType": "string"},
+      "email": {"bsonType": "string"},
+      "phone": {"bsonType": "string"},
+      "driver_license_number": {"bsonType": "string"}
+    }
+  },
+  "rentals": {
+    "bsonType": "object",
+    "required": ["car_id", "customer_id", "start_date", "end_date", "daily_rate", "total_amount"],
+    "properties": {
+      "car_id": {"bsonType": "objectId"},
+      "customer_id": {"bsonType": "objectId"},
+      "start_date": {"bsonType": "date"},
+      "end_date": {"bsonType": "date"},
+      "daily_rate": {"bsonType": "double"},
+      "total_amount": {"bsonType": "double"},
+      "status": {"bsonType": "string"}
+    }
+  },
+  "payments": {
+    "bsonType": "object",
+    "required": ["rental_id", "amount", "method"],
+    "properties": {
+      "rental_id": {"bsonType": "objectId"},
+      "amount": {"bsonType": "double"},
+      "method": {"bsonType": "string"},
+      "status": {"bsonType": "string"}
+    }
+  }
+}
