@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from app.routers import cars, customers, rentals, payments
 from app.db import init_db
+import os
+from app.services import in_memory
 
 app = FastAPI(title="Rental Mobil API", version="0.1.0")
 
@@ -12,7 +14,11 @@ app.include_router(payments.router, prefix="/payments", tags=["payments"])
 
 @app.on_event("startup")
 async def startup_event():
-    await init_db()
+    # If testing, reset in-memory stores instead of initializing DB
+    if os.getenv("TESTING"):
+        await in_memory.reset_all()
+    else:
+        await init_db()
 
 
 @app.get("/")

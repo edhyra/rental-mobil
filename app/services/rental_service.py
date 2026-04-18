@@ -1,9 +1,13 @@
 from datetime import datetime
 from bson import ObjectId
 from pymongo import ReturnDocument
+import os
 
 from app.db import client, DATABASE_NAME
 from app.models import Rental
+from app.services import in_memory
+from typing import Optional
+from beanie import PydanticObjectId
 
 
 async def create_rental(customer_id: str, car_id: str, start_date: datetime, end_date: datetime):
@@ -11,6 +15,10 @@ async def create_rental(customer_id: str, car_id: str, start_date: datetime, end
 
     Returns the Rental document or None if car wasn't available.
     """
+    # If TESTING env var is set, use the in-memory backend
+    if os.getenv("TESTING"):
+        return await in_memory.create_rental(customer_id, car_id, start_date, end_date)
+
     if client is None:
         raise RuntimeError("DB client is not initialized. Ensure app startup has run init_db().")
 
@@ -39,4 +47,41 @@ async def create_rental(customer_id: str, car_id: str, start_date: datetime, end
         status="ongoing",
     )
     await rental.insert()
+    return rental
+
+
+async def return_rental(rental_id: str):
+    """Mark a rental as returned and set the car status back to 'available'.
+
+    Returns the updated Rental or None if not found.
+    """
+    # Use in-memory backend during testing
+    if os.getenv("TESTING"):
+        return await in_memory.return_rental(rental_id)
+
+    if client is None:
+        raise RuntimeError("DB client is not initialized. Ensure app startup has run init_db().")
+
+    rental = await Rental.get(PydanticObjectId(rental_id))
+    if not rental:
+        return None
+
+    if rental.status != "ongoing":
+        return rental
+
+    db = client[DATABASE_NAME]
+    try:
+        car_obj_id = ObjectId(str(rental.car_id))
+    except Exception:
+        car_obj_id = rental.car_id
+
+    await db["cars"].find_one_and_update(
+        {"_id": car_obj_id, "status": "rented"},
+        {"$set": {"status": "available"}},
+        return_document=ReturnDocument.AFTER,
+    )
+
+    rental.status = "returned"
+    rental.returned_at = datetime.utcnow()
+    await rental.save()
     return rental

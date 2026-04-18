@@ -8,3 +8,4 @@ pymongo
 pytest
 pytest-asyncio
 httpx
+email-validator
